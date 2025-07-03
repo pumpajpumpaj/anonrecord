@@ -368,11 +368,45 @@ video: {
       loop();
     }
 
+    
+    async function initCameraSelection() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+    stream.getTracks().forEach(t => t.stop()); // immediately stop it, just need permission
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const videoDevices = devices.filter(d => d.kind === 'videoinput');
+    const cameraSelect = document.getElementById('cameraSelect');
+    cameraSelect.innerHTML = '';
+
+    videoDevices.forEach((device, idx) => {
+      const option = document.createElement('option');
+      option.value = device.deviceId;
+      option.text = device.label || `Camera ${idx + 1}`;
+      cameraSelect.appendChild(option);
+    });
+
+    if (videoDevices.length > 0) {
+      cameraSelect.value = videoDevices[0].deviceId;
+      await startCameraById(cameraSelect.value);
+    }
+
+    // 3. Listen for dropdown changes
+    cameraSelect.addEventListener('change', async e => {
+      await startCameraById(e.target.value);
+    });
+
+  } catch (err) {
+    console.error('Error accessing camera:', err);
+    alert('Please grant camera permission to select cameras.');
+  }
+}
+
+
 async function init() {
   await loadOpenCV();
   await loadLabels();
   session = await ort.InferenceSession.create(MODEL_URL);
-
+  await initCameraSelection();
   const canvas = document.getElementById('canvas');
   const video = document.getElementById('video');
   const cameraSelect = document.getElementById('cameraSelect');
