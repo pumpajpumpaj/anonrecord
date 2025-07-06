@@ -21,8 +21,6 @@
 </head>
 
 <body>
-
-  <h2>Face Detection with Live Camera</h2>
   <label for="cameraSelect">Choose camera:</label>
   <select id="cameraSelect"></select>
   <div>
@@ -52,7 +50,7 @@
     let mediaRecorder = null;
     let recordedChunks = [];
     let micStream = null;
-    const SMOOTHING_WINDOW = 55; // Rolling average over 5 frames
+    const SMOOTHING_WINDOW = 55;
 
     let previousFaces = [];
     const MAX_MISSING_FRAMES = 13;
