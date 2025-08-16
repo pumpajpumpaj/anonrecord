@@ -125,7 +125,7 @@
         const mp4 =  convertWebMtoMP4(blob);
         recordedChunks = [];
 
-        const url = URL.createObjectURL(blob);
+        const url = URL.createObjectURL(mp4);
         downloadLink.href = url;
         downloadLink.style.display = 'inline-block';
         downloadLink.innerText = 'Download video';
